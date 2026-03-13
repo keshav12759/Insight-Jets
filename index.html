@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InsideJet — Fuel Your Walls. Fuel Your Body.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #080808;
+      --charcoal: #111111;
+      --card: #161616;
+      --jet: #FF6A00;
+      --blue: #00BFFF;
+      --white: #F5F5F5;
+      --muted: #888;
+      --border: #222;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── CURSOR ── */
+    body { cursor: none; }
+    #cursor {
+      width: 12px; height: 12px;
+      background: var(--jet);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, background 0.2s;
+      mix-blend-mode: difference;
+    }
+    #cursor.big { transform: scale(4); background: var(--blue); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 3rem;
+      z-index: 100;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+      backdrop-filter: blur(4px);
+    }
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 4px;
+      background: linear-gradient(90deg, var(--jet), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 2rem;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(255,106,0,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,191,255,0.08) 0%, transparent 60%),
+        var(--black);
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.3;
+    }
+    .hero-content { position: relative; z-index: 2; }
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--jet);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.3s forwards;
+    }
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(4rem, 12vw, 10rem);
+      font-weight: 900;
+      line-height: 0.9;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.5s forwards;
+    }
+    h1 span { color: var(--jet); }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-top: 1.5rem;
+      letter-spacing: 1px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.7s forwards;
+    }
+    .hero-btns {
+      display: flex; gap: 1rem; justify-content: center;
+      margin-top: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.9s forwards;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 0.9rem 2.2rem;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.25s;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-primary {
+      background: var(--jet);
+      color: #fff;
+      border: 2px solid var(--jet);
+    }
+    .btn-primary:hover { background: transparent; color: var(--jet); }
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 2px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--blue); color: var(--blue); }
+    .btn-pinterest {
+      background: #E60023;
+      color: #fff;
+      border: 2px solid #E60023;
+    }
+    .btn-pinterest:hover { background: transparent; color: #E60023; }
+
+    /* scroll indicator */
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      color: var(--muted); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
+      opacity: 0; animation: fadeUp 1s 1.4s forwards;
+    }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--jet), transparent);
+      animation: scrollPulse 2s infinite;
+    }
+
+    /* ── SECTIONS SHARED ── */
+    section { padding: 6rem 3rem; }
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--jet);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 3rem;
+    }
+    .section-title span { color: var(--jet); }
+
+    /* ── FILTER TABS ── */
+    .filter-tabs {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+    .tab {
+      padding: 0.5rem 1.3rem;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Barlow', sans-serif;
+    }
+    .tab:hover, .tab.active {
+      border-color: var(--jet);
+      color: var(--jet);
+      background: rgba(255,106,0,0.08);
+    }
+
+    /* ── GALLERY ── */
+    #gallery { background: var(--charcoal); }
+    .masonry {
+      columns: 4;
+      column-gap: 1rem;
+    }
+    @media(max-width:1100px){ .masonry { columns: 3; } }
+    @media(max-width:768px){ .masonry { columns: 2; } }
+    @media(max-width:480px){ .masonry { columns: 1; } }
+
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+      border-radius: 3px;
+      background: var(--card);
+      cursor: pointer;
+    }
+    .gallery-item img {
+      width: 100%; display: block;
+      transition: transform 0.4s ease;
+    }
+    .gallery-item:hover img { transform: scale(1.05); }
+    .gallery-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex; align-items: flex-end; padding: 1rem;
+    }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-overlay span {
+      font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+      font-weight: 700; color: var(--white);
+      padding: 0.4rem 1rem;
+      background: var(--jet);
+      border-radius: 2px;
+    }
+    .gallery-tag {
+      position: absolute; top: 0.7rem; left: 0.7rem;
+      font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase;
+      background: rgba(0,0,0,0.7); color: var(--muted);
+      padding: 0.2rem 0.6rem; border-radius: 2px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* placeholder gradient cards */
+    .grad-card {
+      width: 100%; display: block;
+      border-radius: 3px;
+    }
+
+    /* ── FITNESS ── */
+    #fitness { background: var(--black); }
+    .fitness-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .fitness-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .fitness-card:hover { transform: translateY(-6px); border-color: var(--jet); }
+    .fitness-thumb {
+      width: 100%; height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 3px;
+      position: relative;
+      overflow: hidden;
+    }
+    .fitness-body { padding: 1.2rem 1.5rem 1.5rem; }
+    .fitness-tag {
+      font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--jet); font-weight: 700; margin-bottom: 0.5rem;
+    }
+    .fitness-body h3 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .fitness-body p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .free-badge {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.3rem 0.8rem;
+      background: rgba(0,191,255,0.1);
+      border: 1px solid var(--blue);
+      color: var(--blue);
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 700;
+      border-radius: 2px;
+    }
+
+    /* ── PINTEREST BANNER ── */
+    #pinterest-cta {
+      background: linear-gradient(135deg, #1a0000 0%, #0a0a0a 50%, #00101a 100%);
+      padding: 6rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #pinterest-cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(230,0,35,0.08), transparent);
+    }
+    .pinterest-icon {
+      width: 64px; height: 64px;
+      background: #E60023;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 2rem;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: white;
+      font-family: 'Bebas Neue', sans-serif;
+    }
+    #pinterest-cta h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    #pinterest-cta p { color: var(--muted); margin-bottom: 2.5rem; font-size: 1rem; }
+
+    /* ── STATS ── */
+    #stats {
+      background: var(--charcoal);
+      padding: 4rem 3rem;
+      display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      letter-spacing: 3px;
+      background: linear-gradient(90deg, var(--jet), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-label {
+      font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--muted); margin-top: 0.3rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      padding: 3rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1.5rem;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 4px;
+      background: linear-gradient(90deg, var(--jet), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .footer-desc {
+      font-size: 0.8rem; color: var(--muted); max-width: 300px; line-height: 1.6;
+    }
+    .footer-right { text-align: right; }
+    .footer-copy {
+      font-size: 0.75rem; color: var(--muted); letter-spacing: 1px;
+    }
+    .social-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      color: #E60023;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      transition: opacity 0.2s;
+    }
+    .social-link:hover { opacity: 0.7; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:768px){
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 4rem 1.5rem; }
+      footer { flex-direction: column; text-align: center; }
+      .footer-right { text-align: center; }
+      #stats { gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">InsideJet</div>
+  <ul class="nav-links">
+    <li><a href="#gallery">Wallpapers</a></li>
+    <li><a href="#fitness">Fitness</a></li>
+    <li><a href="#pinterest-cta">Pinterest</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">✦ Premium Walls &amp; Fitness Content</p>
+    <h1>Inside<span>Jet</span></h1>
+    <p class="hero-sub">Fuel Your Walls. Fuel Your Body.</p>
+    <div class="hero-btns">
+      <a href="#gallery" class="btn btn-primary">Explore Wallpapers</a>
+      <a href="https://www.pinterest.com" target="_blank" class="btn btn-pinterest">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+        Visit Pinterest
+      </a>
+      <a href="#fitness" class="btn btn-outline">Free Fitness Content</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Wallpapers</div></div>
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Free Fitness</div></div>
+  <div class="stat"><div class="stat-num">4K</div><div class="stat-label">Resolution</div></div>
+  <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">Pinterest Saves</div></div>
+</div>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <p class="section-label">✦ Collection</p>
+  <h2 class="section-title">Premium <span>Wallpapers</span></h2>
+
+  <div class="filter-tabs">
+    <button class="tab active" onclick="filterGallery('all', this)">All</button>
+    <button class="tab" onclick="filterGallery('nature', this)">Nature</button>
+    <button class="tab" onclick="filterGallery('abstract', this)">Abstract</button>
+    <button class="tab" onclick="filterGallery('fitness', this)">Fitness</button>
+    <button class="tab" onclick="filterGallery('minimal', this)">Minimal</button>
+  </div>
+
+  <div class="masonry" id="galleryGrid"></div>
+</section>
+
+<!-- FITNESS -->
+<section id="fitness">
+  <p class="section-label">✦ Free For Everyone</p>
+  <h2 class="section-title">Fitness <span>Content</span></h2>
+  <p style="color:var(--muted); margin-bottom:3rem; font-size:0.95rem; max-width:500px;">
+    No sign-up. No paywall. Just pure fitness knowledge, motivational wallpapers and workout guides — completely free.
+  </p>
+
+  <div class="fitness-grid">
+    <div class="fitness-card">
+      <div class="fitness-thumb" style="background: linear-gradient(135deg, #1a0a00, #3d1a00);">
+        <span style="color:var(--jet)">PUSH DAY</span>
+      </div>
+      <div class="fitness-body">
+        <div class="fitness-tag">Workout Guide</div>
+        <h3>Push Day Blueprint</h3>
+        <p>Chest, shoulders &amp; triceps — a complete push day routine for all levels with sets, reps and rest times.</p>
+        <span class="free-badge">Free Download</span>
+      </div>
+    </div>
+    <div class="fitness-card">
+      <div class="fitness-thumb" style="background: linear-gradient(135deg, #000d1a, #001f3f);">
+        <span style="color:var(--blue)">NUTRITION</span>
+      </div>
+      <div class="fitness-body">
+        <div class="fitness-tag">Diet Tips</div>
+        <h3>Fuel Like an Athlete</h3>
+        <p>Simple nutrition tips that actually work — macro breakdown, meal timing and hydration guide.</p>
+        <span class="free-badge">Free Guide</span>
+      </div>
+    </div>
+    <div class="fitness-card">
+      <div class="fitness-thumb" style="background: linear-gradient(135deg, #0a1a00, #1a3d00);">
+        <span style="color:#7fff00">MINDSET</span>
+      </div>
+      <div class="fitness-body">
+        <div class="fitness-tag">Motivation</div>
+        <h3>Mental Toughness Walls</h3>
+        <p>Motivational wallpapers designed to keep you locked in — for phone, desktop and tablet.</p>
+        <span class="free-badge">Free Wallpapers</span>
+      </div>
+    </div>
+    <div class="fitness-card">
+      <div class="fitness-thumb" style="background: linear-gradient(135deg, #1a001a, #3d003d);">
+        <span style="color:#ff00ff">CARDIO</span>
+      </div>
+      <div class="fitness-body">
+        <div class="fitness-tag">Training Plan</div>
+        <h3>30-Day Cardio Drop</h3>
+        <p>A structured 30-day cardio plan to boost endurance, burn fat and build consistency from day one.</p>
+        <span class="free-badge">Free Plan</span>
+      </div>
+    </div>
+    <div class="fitness-card">
+      <div class="fitness-thumb" style="background: linear-gradient(135deg, #1a0a0a, #3d1515);">
+        <span style="color:#ff4444">STRENGTH</span>
+      </div>
+      <div class="fitness-body">
+        <div class="fitness-tag">Poster Pack</div>
+        <h3>Iron Mind Poster Pack</h3>
+        <p>5 high-resolution strength posters — perfect for your gym wall or as lockscreen wallpapers.</p>
+        <span class="free-badge">Free Pack</span>
+      </div>
+    </div>
+    <div class="fitness-card">
+      <div class="fitness-thumb" style="background: linear-gradient(135deg, #001a1a, #003d3d);">
+        <span style="color:#00ffff">RECOVERY</span>
+      </div>
+      <div class="fitness-body">
+        <div class="fitness-tag">Wellness</div>
+        <h3>Sleep &amp; Recovery Guide</h3>
+        <p>Why recovery is the secret weapon — sleep protocols, stretching routines and rest day ideas.</p>
+        <span class="free-badge">Free Guide</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PINTEREST CTA -->
+<section id="pinterest-cta">
+  <div style="position:relative;z-index:2">
+    <div class="pinterest-icon">P</div>
+    <h2>Follow Us on <span style="color:#E60023">Pinterest</span></h2>
+    <p>Daily wallpaper drops, fitness posters and exclusive content — all pinned fresh every day.</p>
+    <a href="https://www.pinterest.com" target="_blank" class="btn btn-pinterest" style="font-size:1rem; padding:1.1rem 3rem;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+      Open InsideJet Pinterest
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">InsideJet</div>
+    <p class="footer-desc" style="margin-top:0.5rem">
+      Premium wallpapers, posters and free fitness content. Fuel your walls. Fuel your body.
+    </p>
+  </div>
+  <div class="footer-right">
+    <a href="https://www.pinterest.com" target="_blank" class="social-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+      Pinterest
+    </a>
+    <p class="footer-copy">© 2025 InsideJet. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX - 6 + 'px';
+    cursor.style.top = e.clientY - 6 + 'px';
+  });
+  document.querySelectorAll('a, button, .gallery-item').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+  });
+
+  // Gallery data
+  const wallpapers = [
+    { tag: 'Nature',   h: 320, colors: ['#0d2b1a','#1a4d2e'], label: 'Forest Depths' },
+    { tag: 'Abstract', h: 220, colors: ['#1a0d2b','#2e1a4d'], label: 'Nebula Flow' },
+    { tag: 'Fitness',  h: 280, colors: ['#2b0d0d','#4d1a1a'], label: 'Iron Will' },
+    { tag: 'Minimal',  h: 200, colors: ['#111','#1a1a1a'],    label: 'Pure Black' },
+    { tag: 'Nature',   h: 360, colors: ['#0d1a2b','#1a2e4d'], label: 'Ocean Night' },
+    { tag: 'Abstract', h: 240, colors: ['#2b1a0d','#4d2e1a'], label: 'Ember Storm' },
+    { tag: 'Minimal',  h: 300, colors: ['#0d0d0d','#1a1a2b'], label: 'Void Space' },
+    { tag: 'Fitness',  h: 220, colors: ['#0d2b0d','#1a4d1a'], label: 'Rise Up' },
+    { tag: 'Abstract', h: 260, colors: ['#2b0d1a','#4d1a2e'], label: 'Pulse Wave' },
+    { tag: 'Nature',   h: 200, colors: ['#1a2b0d','#2e4d1a'], label: 'Deep Canopy' },
+    { tag: 'Minimal',  h: 340, colors: ['#0d0d1a','#0d1a2b'], label: 'Midnight' },
+    { tag: 'Fitness',  h: 250, colors: ['#2b1a00','#4d2e00'], label: 'Grind Mode' },
+  ];
+
+  let activeFilter = 'all';
+
+  function buildGallery(filter) {
+    const grid = document.getElementById('galleryGrid');
+    grid.innerHTML = '';
+    wallpapers
+      .filter(w => filter === 'all' || w.tag.toLowerCase() === filter)
+      .forEach(w => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.innerHTML = `
+          <svg class="grad-card" height="${w.h}" viewBox="0 0 400 ${w.h}" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g${Math.random().toString(36).slice(2)}" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="${w.colors[0]}"/>
+                <stop offset="100%" stop-color="${w.colors[1]}"/>
+              </linearGradient>
+            </defs>
+            <rect width="400" height="${w.h}" fill="${w.colors[0]}"/>
+            <rect width="400" height="${w.h}" fill="url(#g${Math.random().toString(36).slice(2)})" opacity="0.8"/>
+            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+              font-family="Bebas Neue, sans-serif" font-size="28" letter-spacing="4" fill="rgba(255,255,255,0.15)">
+              ${w.label}
+            </text>
+          </svg>
+          <div class="gallery-tag">${w.tag}</div>
+          <div class="gallery-overlay"><span>Save Wallpaper</span></div>
+        `;
+        grid.appendChild(item);
+      });
+  }
+
+  function filterGallery(filter, btn) {
+    activeFilter = filter;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    buildGallery(filter);
+  }
+
+  buildGallery('all');
+</script>
+</body>
+</html>
