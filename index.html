@@ -29,19 +29,8 @@
     }
 
     /* ── CURSOR ── */
-    body { cursor: none; }
-    #cursor {
-      width: 12px; height: 12px;
-      background: transparent;
-      border-radius: 50%;
-      position: fixed; top: 0; left: 0;
-      pointer-events: none;
-      z-index: 9999;
-      transition: transform 0.15s ease, background 0.2s;
-      mix-blend-mode: difference;
-    }
-    #cursor.big { transform: scale(4); background: var(--blue); }
-
+    body { cursor: default; }
+    
     /* ── NAV ── */
     nav {
       position: fixed; top: 0; width: 100%;
@@ -438,7 +427,6 @@
 </head>
 <body>
 
-<div id="cursor"></div>
 
 <!-- NAV -->
 <nav>
@@ -606,17 +594,7 @@
 </footer>
 
 <script>
-  // Custom cursor
-  const cursor = document.getElementById('cursor');
-  document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX - 6 + 'px';
-    cursor.style.top = e.clientY - 6 + 'px';
-  });
-  document.querySelectorAll('a, button, .gallery-item').forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('big'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
-  });
-
+  
   // Gallery data
   const wallpapers = [
     { tag: 'Nature',   img: 'images/1.jpg', label: 'Forest Depths' },
