@@ -635,7 +635,7 @@
 
   let activeFilter = 'all';
 
-  function buildGallery(filter) {
+    function buildGallery(filter) {
     const grid = document.getElementById('galleryGrid');
     grid.innerHTML = '';
     wallpapers
@@ -644,26 +644,13 @@
         const item = document.createElement('div');
         item.className = 'gallery-item';
         item.innerHTML = `
-          <svg class="grad-card" height="${w.h}" viewBox="0 0 400 ${w.h}" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="g${Math.random().toString(36).slice(2)}" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="${w.colors[0]}"/>
-                <stop offset="100%" stop-color="${w.colors[1]}"/>
-              </linearGradient>
-            </defs>
-            <rect width="400" height="${w.h}" fill="${w.colors[0]}"/>
-            <rect width="400" height="${w.h}" fill="url(#g${Math.random().toString(36).slice(2)})" opacity="0.8"/>
-            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-              font-family="Bebas Neue, sans-serif" font-size="28" letter-spacing="4" fill="rgba(255,255,255,0.15)">
-              ${w.label}
-            </text>
-          </svg>
+          <img src="${w.img}" alt="${w.label}" style="width:100%; display:block;">
           <div class="gallery-tag">${w.tag}</div>
           <div class="gallery-overlay"><span>Save Wallpaper</span></div>
         `;
         grid.appendChild(item);
       });
-  }
+}
 
   function filterGallery(filter, btn) {
     activeFilter = filter;
