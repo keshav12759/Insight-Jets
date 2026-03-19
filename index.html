@@ -621,21 +621,21 @@
   const wallpapers = [
     { tag: 'Nature',   img: 'images/1.jpg', label: 'Forest Depths' },
     { tag: 'Abstract', img: 'images/2.jpg', label: 'Nebula Flow' },
-    { tag: 'Fitness',  img: 'imahes/3.jpg', label: 'Iron Will' },
-    { tag: 'Minimal',  h: 200, colors: ['#111','#1a1a1a'],    label: 'Pure Black' },
-    { tag: 'Nature',   h: 360, colors: ['#0d1a2b','#1a2e4d'], label: 'Ocean Night' },
-    { tag: 'Abstract', h: 240, colors: ['#2b1a0d','#4d2e1a'], label: 'Ember Storm' },
-    { tag: 'Minimal',  h: 300, colors: ['#0d0d0d','#1a1a2b'], label: 'Void Space' },
-    { tag: 'Fitness',  h: 220, colors: ['#0d2b0d','#1a4d1a'], label: 'Rise Up' },
-    { tag: 'Abstract', h: 260, colors: ['#2b0d1a','#4d1a2e'], label: 'Pulse Wave' },
-    { tag: 'Nature',   h: 200, colors: ['#1a2b0d','#2e4d1a'], label: 'Deep Canopy' },
-    { tag: 'Minimal',  h: 340, colors: ['#0d0d1a','#0d1a2b'], label: 'Midnight' },
-    { tag: 'Fitness',  h: 250, colors: ['#2b1a00','#4d2e00'], label: 'Grind Mode' },
+    { tag: 'Fitness',  img: 'images/3.jpg', label: 'Iron Will' },
+    { tag: 'Minimal',  img: 'images/2.jpg',    label: 'Pure Black' },
+    { tag: 'Nature',   img: 'images/2.jpg', label: 'Ocean Night' },
+    { tag: 'Abstract', img: 'images/2.jpg', label: 'Ember Storm' },
+    { tag: 'Minimal',  img: 'images/2.jpg', label: 'Void Space' },
+    { tag: 'Fitness',  img: 'images/2.jpg', label: 'Rise Up' },
+    { tag: 'Abstract', img: 'images/2.jpg', label: 'Pulse Wave' },
+    { tag: 'Nature',   img: 'images/2.jpg', label: 'Deep Canopy' },
+    { tag: 'Minimal',  img: 'images/2.jpg', label: 'Midnight' },
+    { tag: 'Fitness',  img: 'images/2.jpg', label: 'Grind Mode' },
   ];
 
   let activeFilter = 'all';
 
-    function buildGallery(filter) {
+  function buildGallery(filter) {
     const grid = document.getElementById('galleryGrid');
     grid.innerHTML = '';
     wallpapers
@@ -651,7 +651,6 @@
         grid.appendChild(item);
       });
 }
-
   function filterGallery(filter, btn) {
     activeFilter = filter;
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
